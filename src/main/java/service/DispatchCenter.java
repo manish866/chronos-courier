@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 public class DispatchCenter {
     private final Map<String, Rider> riders = new HashMap<>();
@@ -108,5 +109,81 @@ public class DispatchCenter {
 
     private void logStatus(String packageId, String status) {
         auditTrail.add(new StatusChangeLog(packageId, status, System.currentTimeMillis()));
+    }
+
+    public void completeDelivery(String packageId){
+        Package pkg = packages.get(packageId);
+        if(pkg == null || "ASSIGNED".equals(pkg.status))
+            throw new IllegalArgumentException("Package not found or not assigned");
+
+
+
+
+        pkg.status = "DELIVERED";
+        pkg.deliveryTime = System.currentTimeMillis();
+        logStatus(pkg.id, "DELIVERED");
+
+
+
+
+
+        Rider rider = riders.get(pkg.assignedRiderId);
+        if (rider != null){
+            rider.currentLoad--;
+            if (rider.currentLoad == 0){
+                rider.status = Status.AVAILABLE;
+                tryAssignToAvailableRider(rider);
+            }
+        }
+    }
+
+    public List<Package> getDeliveredByRider(String riderId, long sinceMillis){
+        return packages.values().stream()
+                .filter(p -> "DELIVERED".equals(p.status))
+                .filter(p -> riderId.equals(p.assignedRiderId))
+                .filter(p -> p.deliveryTime >= sinceMillis)
+                .collect(Collectors.toList());
+
+
+
+    }
+    public List<Package> getMissedExpressDeliveries(){
+        return packages.values().stream()
+                .filter(p -> p.priority == Priority.EXPRESS)
+                .filter(p -> "DELIVERED".equals(p.status))
+                .filter(p -> p.deliveryTime > p.deadLine)
+                .collect(Collectors.toList());
+
+
+
+    }
+
+    public void setRiderOffline(String riderId){
+        Rider rider = riders.get(riderId);
+        if (rider == null)
+            return;
+
+
+
+        rider.status = Status.OFFLINE;
+
+
+
+        List<Package> reassigned = packages.values().stream()
+                .filter(p -> "ASSIGNED".equals(p.status))
+                .filter(p -> riderId.equals(p.assignedRiderId))
+                .collect(Collectors.toList());
+
+        for (Package p : reassigned) {
+            p.status = "PENDING";
+            p.assignedRiderId = null;
+            p.pickUpTime = 0;
+            pendingPackages.offer(p);
+            logStatus(p.id, "REASSIGNED");
+        }
+
+
+        rider.currentLoad = 0;
+
     }
 }
