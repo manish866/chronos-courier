@@ -93,6 +93,26 @@ public class Main {
                 break;
             }
 
+            case "LIST_PENDING_PACKAGES": {
+                center.getPendingPackages().forEach(p -> System.out.println(p.id));
+                break;
+            }
+
+            case "SHOW_PACKAGE": {
+                String id = parts[1];
+                Package p = center.getPackage(id);
+                if (p == null) {
+                    System.out.println("Package not found: " + id);
+                } else {
+                    System.out.println("Package ID: " + p.id);
+                    System.out.println("Status: " + p.status);
+                    System.out.println("Assigned Rider: " + p.assignedRiderId);
+                    System.out.println("Priority: " + p.priority);
+                    System.out.println("Fragile: " + p.fragile);
+                }
+                break;
+            }
+
             default:
                 System.out.println("Unknown command: " + parts[0]);
         }

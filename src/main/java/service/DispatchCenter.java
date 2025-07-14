@@ -244,4 +244,13 @@ public class DispatchCenter {
     public Package getPackage(String id) {
         return packages.get(id);
     }
+
+    /**
+     * Returns a list of all pending packages.
+     *
+     * @return list of packages in PENDING status
+     */
+    public List<Package> getPendingPackages() {
+        return new ArrayList<>(pendingPackages);
+    }
 }
