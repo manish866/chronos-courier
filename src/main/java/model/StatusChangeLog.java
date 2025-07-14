@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Represents a log entry for a status change of a package.
+ * Captures the package ID, new status, and the timestamp of the change.
+ */
 public class StatusChangeLog {
     public String packageId;
     public String status;

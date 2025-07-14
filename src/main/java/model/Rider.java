@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Represents a delivery rider in the system.
+ * Contains attributes related to rider status, capability, and workload.
+ */
 public class Rider {
     public String id;
     public Status status;

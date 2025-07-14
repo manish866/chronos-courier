@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Represents a delivery package in the Chronos Couriers system.
+ * Stores metadata such as priority, deadlines, assignment status, and timestamps.
+ */
 public class Package {
     public String id;
     public Priority priority;
