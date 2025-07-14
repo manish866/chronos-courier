@@ -39,6 +39,11 @@ If using IntelliJ or VSCode, just run the Main.java file.
 4. PriorityQueue<Package>: Manages dispatch order.
 5. Map<String, Rider> and Map<String, Package>: Fast lookup and storage.
 
+### Core Algorithm Highlights
+- **Package Assignment**: Priority queue based on EXPRESS > STANDARD, deadline, and order time.
+- **Rider Matching**: Available, reliable riders who meet fragile constraints are prioritized.
+- **Late Delivery Detection**: `deliveryTime > deadline` for EXPRESS packages.
+
 ### Example Input
 1. REGISTER_RIDER R1 AVAILABLE 4.7 true
 2. PLACE_ORDER P1 EXPRESS 1899999999999 false
